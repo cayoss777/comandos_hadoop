@@ -1,0 +1,216 @@
+
+
+####Uno####
+--Instalar JDK
+	permisos
+	chmod 777 jd...
+
+    rpm -ivh jdk-8u221-linux-x64.rpm
+
+alternatives --config java
+
+--gedit .bashrc
+    
+    export HADOOP_HOME=/opt/hadoop
+    export JAVA_HOME=/usr/java/jdk1.8.0_221-amd64
+    export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+
+
+--ejecutar . ./.bashrc
+
+-- extraer con tar
+Ahora extraemos con el comando tar xvf /home/hadoop/Descargas/Hadoop-2.7.3.tar.gz
+Continuando movemos Hadoop-2.7.3 a opt/Hadoop con el comando mv
+
+permisos
+chown hadoop hadoop
+
+###Dos###
+
+
+-- core-site.xml
+
+
+<configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://localhost:9000</value>    
+    </property>
+</configuration>
+
+
+---hdfs-site.xml --------
+
+
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>    
+    </property>
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>/datos/namenode</value>    
+    </property>
+    <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>/datos/datanode</value>    
+    </property>
+
+
+###### crear carpeta datos
+
+cd /
+mkdir datos
+cd datos
+mkdir namenode
+mkdir datanode
+cd ..
+chown -R hadoop:hadoop datos
+
+##### ssh-key
+
+##### format namenode
+
+
+############ arrancamos hdfs  #######
+
+	cd /opt/hadoop/sbin
+	start-dfs.sh
+
+Activar ip
+
+desactivar cortafuegos
+
+-- gedit /etc/sysconfig/network
+-- gedit /etc/hosts  OJO LA IP DE TU MAQUINA Y NOMBRE(NODO1)
+
+##### Encontrar o eliminar al momento de formatear el namenode -format
+
+
+  <property>
+    <name>mapreduce.framework.name</name>
+    <value>yarn</value>
+  </property>
+
+
+
+<!-- Site specific YARN configuration properties -->
+  <property>
+    <name>yarn.resourcemanager.hostname</name>
+    <value>localhost</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.aux-services</name>
+    <value>mapreduce_shuffle</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.aux-services.mapreduce_shuffle.class</name>
+    <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+  </property>
+ 
+
+#### el hisotrial arrancar
+en /opt/hadoop/sbin   
+
+
+mr-jobhistory-daemon.sh start historyserver
+
+############# más que pseudo distribuido   SSH
+### ssh-keygen
+cp
+scp auho  nodo2:/ hoome/
+
+
+
+ssh-keygen
+
+cat id-rsa .pu >> au
+
+chmod 0600 authorized_keys
+
+
+### cluster real
+
+eliminar namenode de los esclavos
+    rm -rf namenode
+eliminar del datanode el current
+    rm -rf current
+
+    rm -rf datanode
+
+
+editar en el maestro
+core-site.xml
+yarn-site.xml
+
+scp hdfs-site.xml nodo2:/opt/hadoop/etc/hadoop/
+
+gedit slaves
+
+/opt/hadoop/etc/hadoop/
+
+
+a formatear OJO HDFS NAMENODE -FORMAT
+
+.ssh chmod 0600 authorized_keys
+
+
+
+
+
+
+hosts eliminados del hosts
+
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+
+
+### ojo  ojo jo j ojo jo j ocopias:copiar los ficheros del nodo1 a los esclavos
+
+datos de los nodos: hdfs dfsadmin -report
+
+#######    map reduce
+
+
+---- hdfs dfs -mkdir /dirUnsaac
+
+--- pasar el archivo a unsaac_uno
+hdfs dfs -put tradiciones_peruanas.txt /UNSAAC_UNO
+
+
+---- ejecutar mapreduce UBICANDONOS EN CD /OPT/HADOOP/SHARE/HADOOP/MAPREDUCE
+
+
+
+hadoop jar hadoop-mapreduce-examples-2.8.5.jar wordcount /UNSAAC_UNO/tradiciones_peruanas.txt /SalidaUnsaacMapReduce
+
+
+------------------Segundo Archivo--------------------------
+
+
+--copiar de origen a destino
+cp 
+cp /tmp/UnsaacMapReduce.java /home/hadoop
+
+-- pasamos archivos de log_web.log a unsaac22
+hdfs dfs -put log_web.log /unsaac22
+
+cd cd export HADDOP_CLASSPATH=/usr/java/jdk1    /lib/tools.jar
+--crear carpeta unsaac2 y mover
+mv UnsaacMapReduce.java UNSAAC2/
+cd UNSAAC2
+--ejecutar con el mismo nombre el archivo y el class PARA COMPILAR
+
+hadoop com.sun.tools.javac.Main UnsaacMapReduce.java
+--convertir en JAR
+
+jar cf UnsaacMapReduce.jar Unsaac*.class
+
+ls -l
+--antes pasar archivo log_web
+hdfs dfs -put /tmp/access_log /unsaac30/access_log
+
+
+hadoop jar UnsaacMapReduce.jar UnsaacMapReduce /UNSAAC_TRES/log_web /SalidaUnsaacLog
+
+
